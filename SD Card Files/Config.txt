@@ -1,0 +1,10 @@
+#Configuration file for battery tester.
+#
+#edit this value to change high pulse time (in seconds)
+hPulseTime=1
+#edit this value to change total pulse percent soc drop
+drop=10
+#edit this value to change interval between pulses (in minutes)
+pulseInterval=15
+#edit this value to change percent soc value battery reaches before stop
+minSOC=10
