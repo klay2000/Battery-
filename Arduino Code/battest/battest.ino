@@ -58,11 +58,12 @@ String readLine(File file){ // returns the next line from a file
 
   char cur;
 
-  while(cur != '\n' && file.available()){
-    line += cur;
+  while(cur != '\n' && file.available() > 0){
     cur = file.read();
+    line += cur;
+//    Serial.println(line);
   }
-
+  
   return line;
   
 }
@@ -92,6 +93,8 @@ void setup() {
     pinMode(lowAmp, OUTPUT);// low amperage
     //A0 is Current Sense
     //A1 is Voltage Sense
+
+    pinMode(10, OUTPUT);
     
     serial.begin(9600);
 
@@ -110,30 +113,42 @@ void loop() {
     clearScreen();
 
     serial.write(" Checking SD... "); // check for sd card every 500 ms
-    while(!SD.begin()){
+    Serial.println("checking sd");
+    while(!SD.begin(10)){
       delay(500);  
     }
 
+    Serial.println("sd checked");
+    
     clearScreen();
     
     delay(1000);
 
     clearScreen();
 
+    Serial.println("opening config");
     // read the config
-    File conf = SD.open("config.txt", FILE_READ);
+    File conf = SD.open("config.txt");
 
-    while(conf.available()){
+    Serial.println("config open");
+
+    while(conf.available()>0){
+      Serial.println(String(conf.available()) + " Bytes Available");
       String line = readLine(conf);
-      if(!line.charAt(0) == '#'){
-        String var = line.substring(0, 3);
+     
+      Serial.println(line);
+      
+      if(!line.startsWith("#")){
+        String var = line.substring(0, 4);
         String arg = line.substring(5);
-
-        Serial.println((line));
-
+        
+        Serial.println(var);
+        Serial.println(arg);
+        
         if(arg.toInt() < 0){
           serial.write("invalid config! ");
           freeze();
+          Serial.println("-value");
         }
         
         if(var.equals("htim")){ // high pulse time in seconds
@@ -146,6 +161,7 @@ void loop() {
           minSOC = arg.toInt();
         }else{
           serial.write("invalid config! ");
+          Serial.println("missing value");
           freeze();
         }
       }
