@@ -99,10 +99,7 @@ void setup() {
     serial.begin(9600);
 
     Serial.begin(9600);
-
-
-    serial.print(byte(0x07));
-    serial.print(byte(18));
+    
 }
 
 void loop() {
@@ -182,11 +179,11 @@ void loop() {
     }
 
     data.println("phase 0 is baseline phase 1 is a discharge phase 2 is a recharge phase 3 is a high pulse"); // write phases explanation row to data file
-    data.println("Voltage, Amperage, Time in ms), Phase"); // write header row to data file
+    data.println("Voltage, Amperage, Time(in ms), Phase"); // write header row to data file
     logData(0, 0, data); // logs baseline as time 0 phase 0
     
     digitalWrite(lowAmp, HIGH); // slowly discharge battery until at 7 volts or less while recording data
-    while(readVolts() > 0){
+    while(readVolts() > 7){
       accurateDelayReset();
       
       ahs += ((readAmps()/(sampleRate/1000))/60)/60;
@@ -194,8 +191,6 @@ void loop() {
       clearScreen();
       serial.print(" Discharging... ");
       serial.print("V: "+String(readVolts()));
-
-      Serial.println(String(readVolts()));
       
       timeInPhase += sampleRate;
       
@@ -218,7 +213,7 @@ void loop() {
       clearScreen();
       serial.print("  Recharging... ");
       serial.print("A: "+String(readAmps()));
-
+      
       timeInPhase += sampleRate;
       
       accurateDelay(sampleRate);
