@@ -14,8 +14,8 @@ int voltRead = A1; // volt read pin
 
 int setHighAmp = 4; // set high amp pin
 int resetHighAmp = 5; // reset high amp pin
-int charge = 6; // charge pin
-int lowAmp = 7; // low amp pin
+int charge = 7; // charge pin
+int lowAmp = 6; // low amp pin
 
 long timeInPhase = 0; // time spent in current test phase
 int sampleRate = 100; // sample rate in miliseconds
@@ -46,10 +46,14 @@ double readVolts(){ // reads volts
   
 }
 
-double readAmps(){ // reads amps
+long readAmps(){ // reads amps
+
+  long amps = ((10000.0l*analogRead(ampRead))/15389.0l) - (7130000.0l/15389.0l);
+
+  Serial.println(analogRead(ampRead));
   
-  return ((0.17595*analogRead(ampRead))-1.65);
-  
+  return amps;
+  //return analogRead(ampRead);
 }
 
 String readLine(File file){ // returns the next line from a file
